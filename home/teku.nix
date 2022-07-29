@@ -1,7 +1,7 @@
  { config, pkgs, ... }:
 
 {
- virtualisation.oci-containers.containers.howie-teku_node-1 = {
+ virtualisation.oci-containers.containers.teku = {
         image = "consensys/teku:latest";
         autoStart = false;
         ports = [
@@ -22,4 +22,29 @@
 
 
     };
+ virtualisation.oci-containers.containers.besu = {
+        image = "hyperledger/besu:latest";
+        autoStart = false;
+        ports = [
+            "8545:8545/tcp"
+            "8546:8546/tcp"
+            "30303:30303"
+            ];
+        cmd = [ 
+	    "--config-file=/opt/besu/conf/config.toml"
+        ];
+        environment ={
+          BESU_OPTS="-Xmx12g";
+          };
+	    
+        volumes =[
+            "/home/howie/besu/conf:/opt/besu/conf/"
+            "/home/howie/besu/data:/opt/besu/data/"
+            ];
+
+
+    };
+
+
+
     }

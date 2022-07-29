@@ -13,16 +13,31 @@
   boot.kernelModules = [ ];
   boot.extraModulePackages = [ ];
 
+
   fileSystems."/" =
     { device = "/dev/disk/by-uuid/71e77fb3-be64-4f09-addd-6820b12f22d1";
       fsType = "ext4";
     };
 
-
   fileSystems."/boot/efi" =
     { device = "/dev/disk/by-uuid/9A3D-C22F";
       fsType = "vfat";
     };
+
+  fileSystems."/data" =
+    { device = "/dev/disk/by-uuid/cc35d034-94d3-4886-a02b-2bb54957ef86";
+      fsType = "ext4";
+    };
+
+  fileSystems."/eth" =
+    { device = "/dev/disk/by-uuid/182179ea-a124-4c44-a41a-048acb58afdf";
+      fsType = "ext4";
+    };
+
+  fileSystems."/gig1" =
+    { device = "/dev/disk/by-uuid/726f7738-97a0-4ab7-97b7-16a80aa1a4b2";                                                                                               
+      fsType = "ext4";                                                                                                                                                 
+    };                    
 
   swapDevices =
     [ { device = "/dev/disk/by-uuid/ef76d96a-acde-4ca6-a931-aba7de10dead"; }
@@ -33,7 +48,7 @@
   # still possible to use this option, but it's recommended to use it in conjunction
   # with explicit per-interface declarations with `networking.interfaces.<interface>.useDHCP`.
   networking.useDHCP = lib.mkDefault true;
-  # networking.interfaces.enp5s0.useDHCP = lib.mkDefault true;
+  networking.interfaces.enp5s0.useDHCP = lib.mkDefault true;
 
   hardware.cpu.intel.updateMicrocode = lib.mkDefault config.hardware.enableRedistributableFirmware;
 }

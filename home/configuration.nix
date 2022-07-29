@@ -7,49 +7,77 @@
 {
   imports =
     [ # Include the results of the hardware scan.
-    ./hardware-configuration.nix
+      ./hardware-configuration.nix
+      ./grafana.nix
+#      ./homer.nix
 	  ./nginx.nix
 	  ./nextcloud.nix
 	  ./vscode.nix
 	  ./docker.nix #pihole
 	  ./teku.nix
-    ./syncthing.nix
-    ./unifi.nix
-    <home-manager/nixos>
-#    ./samba.nix
-#    ./plex.nix
+      ./syncthing.nix
+      ./unifi.nix
+      <home-manager/nixos>
+#     ./samba.nix
+#     ./plex.nix
     ];
 
   # Bootloader.
   boot.loader.systemd-boot.enable = true;
   boot.loader.efi.canTouchEfiVariables = true;
   boot.loader.efi.efiSysMountPoint = "/boot/efi";
-  networking.nameservers = [ "1.1.1.1" "8.8.8.8"];
-  networking.hostName = "home"; # Define your hostname.
-  networking.interfaces.enp5s0.ipv4.addresses = [{
-        address = "192.168.1.132";
-        prefixLength = 24;
-      }];
-  fileSystems."/data" =
-    { device = "/dev/disk/by-uuid/cc35d034-94d3-4886-a02b-2bb54957ef86";
-      fsType = "ext4";
-    };
-
-  # networking.wireless.enable = true;  # Enables wireless support via wpa_supplicant.
-
-  # Configure network proxy if necessary
-  # networking.proxy.default = "http://user:password@proxy:port/";
-  # networking.proxy.noProxy = "127.0.0.1,localhost,internal.domain";
+  boot.loader.grub.gfxmodeEfi = "1920x1080";
 
   # Enable networking
-  networking.networkmanager.enable = true;
+  networking = {
+ #   networkmanager.enable = true;
+  #  networkmanager.insertNameservers = ["1.1.1.1"];
+    nameservers = [ "1.1.1.1" "8.8.8.8"];
+    hostName = "home"; # Define your hostname.
+  #  defaultGateway =  {
+  #     address = "192.168.1.1";
+  #     interface = "enp5s0";
+  #     };
+  
+  #  interfaces.enp5s0.ipv4.addresses = [{
+  #      address = "192.168.1.132";
+  #      prefixLength = 24;
+  #   }];
+    
+    firewall.allowedTCPPorts = [ 3389 ];
+    firewall.enable = false;
+  
+  # Open ports in the firewall.
+  # networking.firewall.allowedTCPPorts = [ ... ];
+  # networking.firewall.allowedUDPPorts = [ ... ];
+  # networking.proxy.default = "http://user:password@proxy:port/";
+  # networking.proxy.noProxy = "127.0.0.1,localhost,internal.domain";
+};
+  
+# Enable the OpenSSH daemon.
+  services.openssh = {
+  	enable = true;
+	permitRootLogin = "no";
+	passwordAuthentication = false;
+ 	ports = [ 69 ];
+ };
+ 
+
+  programs.ssh.knownHosts = {
+  	"github.com" = {
+		hostNames = [ "github.com"];
+		publicKeyFile = "/home/howie/.pubkey/ed25519.pub";
+	};
+  };
+
+
+  services.jellyfin.enable = true;
 
   # Set your time zone.
   time.timeZone = "Europe/Amsterdam";
 
   # Select internationalisation properties.
   i18n.defaultLocale = "en_US.UTF-8";
-
   i18n.extraLocaleSettings = {
     LC_ADDRESS = "nl_NL.UTF-8";
     LC_IDENTIFICATION = "nl_NL.UTF-8";
@@ -63,16 +91,14 @@
   };
 
   # Enable the X11 windowing system.
-  services.xserver.enable = true;
-  
-  # Enable the KDE Plasma Desktop Environment.
-  services.xserver.displayManager.sddm.enable = true;
-  services.xserver.desktopManager.plasma5.enable = true;
+  services.xserver = {
+      enable = true;
+      displayManager.sddm.enable = true;
+      desktopManager.plasma5.enable = true;
+  };
   
   services.xrdp.enable = true;
   services.xrdp.defaultWindowManager = "startplasma-x11";
-  networking.firewall.allowedTCPPorts = [ 3389 ];
-  services.jellyfin.enable = true;
   
 # Configure keymap in X11
   services.xserver = {
@@ -80,45 +106,16 @@
     xkbVariant = "euro";
   };
 
-  # Enable CUPS to print documents.
-  # services.printing.enable = true;
-
-  # Enable sound with pipewire.
-  # sound.enable = true;
-  # hardware.pulseaudio.enable = false;
-  # security.rtkit.enable = true;
-  # services.pipewire = {
-  #   enable = true;
-  #   alsa.enable = true;
-  #   alsa.support32Bit = true;
-  #   pulse.enable = true;
-    # If you want to use JACK applications, uncomment this
-    #jack.enable = true;
-
-    # use the example session manager (no others are packaged yet so this is enabled by default,
-    # no need to redefine it in your config for now)
-    #media-session.enable = true;
-  #};
-
-  # Enable touchpad support (enabled default in most desktopManager).
-  # services.xserver.libinput.enable = true;
-
   # Define a user account. Don't forget to set a password with ‘passwd’.
   users.users.howie = {
     isNormalUser = true;
     description = "howie";
     extraGroups = [ "networkmanager" "wheel" "syncthing" "docker"];
-    openssh.authorizedKeys.keyFiles = ["/home/howie/.pubkey/ed25519.pub"
-					"/home/howie/.pubkey/cb.pub"
-					];
-    
-  };
+    openssh.authorizedKeys.keyFiles = [ "/home/howie/.pubkey/ed25519.pub"
+				        "/home/howie/.pubkey/cb.pub"
+                        "/home/howie/.pubkey/bia.pub"
+				      ];
 
-  programs.ssh.knownHosts = {
-  	"github.com" = {
-		hostNames = [ "github.com"];
-		publicKeyFile = "/home/howie/.pubkey/ed25519.pub";
-	};
   };
 
   users.users.jellyfin = {
@@ -133,12 +130,28 @@
   };
   
   home-manager.users.howie = { pkgs, ... }: {
-  home.packages = [ pkgs.git
+    home.packages = [ pkgs.git
                     pkgs.alacritty
                     ];
     home.stateVersion = "22.05";
+
     programs.bash.enable = true;
-}; 
+    programs.neovim = {
+      enable = true;
+	  viAlias = true;
+	  vimAlias = true;
+        extraConfig = ''
+            "custom conf!
+            syntax on
+            colorscheme delek
+            set tabstop=4
+		    set shiftwidth=4
+            set expandtab   
+        	'';
+	     };
+	};
+
+ 
 
   # Allow unfree packages
   nixpkgs.config.allowUnfree = true;
@@ -146,36 +159,23 @@
   # List packages installed in system profile. To search, run:
   # $ nix search wget
   environment.systemPackages = with pkgs; [
-    neovim #vim # Do not forget to add an editor to edit configuration.nix! The Nano editor is also installed by default.
+    #neovim #vim # Do not forget to add an editor to edit configuration.nix! The Nano editor is also installed by default.
     wget
     firefox
     kate
-    gparted
     tmux
+    gparted
   ];
 
   # Some programs need SUID wrappers, can be configured further or are
   # started in user sessions.
   # programs.mtr.enable = true;
-   programs.gnupg.agent = {
+    programs.gnupg.agent = {
      enable = true;
      enableSSHSupport = true;
    };
-
-
-# Enable the OpenSSH daemon.
-  services.openssh = {
-  	enable = true;
-	permitRootLogin = "no";
-	passwordAuthentication = false;
-  };
-  
-
-  # Open ports in the firewall.
-  # networking.firewall.allowedTCPPorts = [ ... ];
-  # networking.firewall.allowedUDPPorts = [ ... ];
-  # Or disable the firewall altogether.
-  networking.firewall.enable = false;
+    environment.variables.EDITOR = "nvim";
+ 
 
   # This value determines the NixOS release from which the default
   # settings for stateful data, like file locations and database versions

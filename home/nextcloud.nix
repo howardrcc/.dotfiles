@@ -13,11 +13,14 @@
     # Enable built-in virtual host management
     # Takes care of somewhat complicated setup
     # See here: https://github.com/NixOS/nixpkgs/blob/master/nixos/modules/services/web-apps/nextcloud.nix#L529
+
 #    nginx.enable = true;
+
+#    home = "/gig1/nextcloud";
     hostName = "howardcc.duckdns.org";
     package = pkgs.nextcloud24;
-    config.extraTrustedDomains = ["home"];
-
+    config.extraTrustedDomains = ["home" "nextcloud.box" "home.local"];
+    
     # Use HTTPS for links
     https = true;
 
