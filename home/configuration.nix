@@ -1,7 +1,3 @@
-# Edit this configuration file to define what should be installed on
-# your system.  Help is available in the configuration.nix(5) man page
-# and in the NixOS manual (accessible by running ‘nixos-help’).
-
 { config, pkgs, ... }:
 
 {
@@ -10,11 +6,11 @@
       ./hardware-configuration.nix
       ./grafana.nix
 #      ./homer.nix
-	  ./nginx.nix
-	  ./nextcloud.nix
-	  ./vscode.nix
-	  ./docker.nix #pihole
-	  ./teku.nix
+	    ./nginx.nix
+	    ./nextcloud.nix
+	    ./vscode.nix
+	    ./docker.nix #pihole
+	    ./teku.nix
       ./syncthing.nix
       ./unifi.nix
       <home-manager/nixos>
@@ -57,9 +53,9 @@
 # Enable the OpenSSH daemon.
   services.openssh = {
   	enable = true;
-	permitRootLogin = "no";
-	passwordAuthentication = false;
- 	ports = [ 69 ];
+    permitRootLogin = "no";
+    passwordAuthentication = false;
+    ports = [ 69 ];
  };
  
 
@@ -111,9 +107,10 @@
     isNormalUser = true;
     description = "howie";
     extraGroups = [ "networkmanager" "wheel" "syncthing" "docker"];
-    openssh.authorizedKeys.keyFiles = [ "/home/howie/.pubkey/ed25519.pub"
-				        "/home/howie/.pubkey/cb.pub"
-                        "/home/howie/.pubkey/bia.pub"
+    openssh.authorizedKeys.keyFiles = [ 
+      "/home/howie/.pubkey/ed25519.pub"
+			"/home/howie/.pubkey/cb.pub"
+      "/home/howie/.pubkey/bia.pub"
 				      ];
 
   };
@@ -138,8 +135,8 @@
     programs.bash.enable = true;
     programs.neovim = {
       enable = true;
-	  viAlias = true;
-	  vimAlias = true;
+      viAlias = true;
+      vimAlias = true;
         extraConfig = ''
             "custom conf!
             syntax on

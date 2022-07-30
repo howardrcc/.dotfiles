@@ -4,16 +4,6 @@
 
     users.users.howie.extraGroups = [ "docker" ];
 
-    #config.
-#    virtualisation.oci-containers.containers = {      
-#	hackagecompare = {        
-#		image = "chrissound/hackagecomparestats-webserver:latest";        
-#		ports = ["3010:3010"];        
-#		volumes = [          "/root/hackagecompare/packageStatistics.json:/root/hackagecompare/packageStatistics.json"        ];        
-#		cmd = [          "--base-url"          "\"/hackagecompare\""        ];      };    };  }
-#	  };
-	#};	
-
     virtualisation.docker.enable = true;
     #virtualisation.podman = {      enable = true;      # Create a`docker` alias for podman, to use it as a drop-in replacement
      # dockerCompat = true;
