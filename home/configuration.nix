@@ -18,6 +18,13 @@
 #     ./plex.nix
     ];
 
+  nixpkgs.overlays = [
+    (import /home/howie/.dotfiles/home/overlays.nix)
+
+  ];
+
+  services.tailscale.enable = true;
+
   # Bootloader.
   boot.loader.systemd-boot.enable = true;
   boot.loader.efi.canTouchEfiVariables = true;
@@ -130,7 +137,7 @@
     home.packages = [ pkgs.git
                     pkgs.alacritty
                     ];
-    home.stateVersion = "22.05";
+#    home.stateVersion = "22.05";
 
     programs.bash.enable = true;
     programs.neovim = {

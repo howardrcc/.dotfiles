@@ -83,18 +83,6 @@ services.nginx = {
            proxyWebsockets = true;
            };
        };
-
-   "homer.box" = {
-       forceSSL = true;
-       sslCertificate = "/etc/ssl/certs/myCA.pem";
-       sslCertificateKey = "/etc/ssl/certs/myCA.key";
-       locations."/" = {
-           proxyPass = "http://0.0.0.0:82";
-  #     proxyWebsockets = true;
-           };
-       };
-        
-
   
   }; #vh
 }; #nginx

@@ -29,10 +29,10 @@
       fsType = "ext4";
     };
 
-  fileSystems."/eth" =
-    { device = "/dev/disk/by-uuid/182179ea-a124-4c44-a41a-048acb58afdf";
-      fsType = "ext4";
-    };
+#  fileSystems."/eth" =
+ #   { device = "/dev/disk/by-uuid/182179ea-a124-4c44-a41a-048acb58afdf";
+  #    fsType = "ext4";
+   # };
 
   fileSystems."/gig1" =
     { device = "/dev/disk/by-uuid/726f7738-97a0-4ab7-97b7-16a80aa1a4b2";                                                                                               

@@ -11,7 +11,7 @@
         passwordFile="/grafana/wpw.txt";
         host="smtp.t-mobilethuis.nl:587";
         enable=true;
-        fromAddress="howardchingchung@gmail.com";
+        fromAddress="howard@t-mobilethuis.nl";
     };
 };
 
@@ -61,7 +61,19 @@
         metrics_path="metrics";
         scheme= "http";
         static_configs = [{
-          targets = ["localhost:9545"];
+          targets = ["192.168.1.53:9545"];
+   #       targets = ["localhost:9091"];
+          }];
+     }
+
+          {
+        job_name= "besu_old";
+        scrape_interval="15s";
+        scrape_timeout="10s";
+        metrics_path="metrics";
+        scheme= "http";
+        static_configs = [{
+          targets = ["0.0.0.0:9545"];
    #       targets = ["localhost:9091"];
           }];
      }

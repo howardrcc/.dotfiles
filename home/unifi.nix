@@ -2,6 +2,6 @@
 
 {
   services.unifi.enable = true;
-  services.unifi.unifiPackage = pkgs.unifi;      
+  services.unifi.unifiPackage = pkgs.unifiCustom;      
   services.unifi.openFirewall = true;
 }
