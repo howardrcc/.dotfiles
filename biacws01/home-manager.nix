@@ -14,6 +14,8 @@
       pkgs.teams
       pkgs.discord
       pkgs.spotify
+      pkgs.p7zip
+      pkgs.gparted      
       #pkgs.spicetify-cli
      
 #      pkgs.winePackages.stagingFull

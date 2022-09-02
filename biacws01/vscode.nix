@@ -5,3 +5,5 @@
 
   services.vscode-server.enable = true;
 }
+# systemctl --user enable auto-fix-vscode-server.service
+# systemctl --user start auto-fix-vscode-server.service

@@ -12,8 +12,24 @@
       ./home-manager.nix
 		  ./docker.nix
       ./sound.nix
-      
+      ./systemtools.nix
+      ./vscode.nix
+      ./vfio.nix
+      ./vfio-extra.nix
+     
     ];
+  # Define a user account. Don't forget to set a password with ‘passwd’.
+	users.users.howie = {
+		description = "howardchingchung@gmail.com";
+    isNormalUser = true;
+    extraGroups = [ "wheel" "docker" "audio" "jackaudio" "syncthing" "libvirtd"]; 
+    openssh.authorizedKeys.keyFiles = [ 
+      "/home/howie/.ssh/id_ed25519.pub"
+		];
+	  packages = with pkgs; [
+       firefox
+     ];
+   };
 
   nixpkgs.config.allowUnfree = true;
   home-manager.useGlobalPkgs = true;
@@ -44,7 +60,13 @@
   time.timeZone = "Europe/Amsterdam";
  
 #   Select internationalisation properties.
-   i18n.defaultLocale = "en_US.UTF-8";
+   i18n.defaultLocale = "nl_NL.utf-8";
+   i18n.supportedLocales = ["all"];
+   i18n.glibcLocales = pkgs.glibcLocales;
+   #export LC_ALL=C
+    #export LANGUAGE = (unset),
+    #export LC_ALL = (unset),
+    #export LANG = "Default.UTF-8"
  # i18n.extraLocaleSettings = {
  #   LC_ADDRESS = "en_US.UTF-8";
  #   LC_IDENTIFICATION = "en_US.UTF-8";
@@ -82,20 +104,7 @@
   # Enable CUPS to print documents.
   # services.printing.enable = true;
   
-  # Define a user account. Don't forget to set a password with ‘passwd’.
-	users.users.howie = {
-		description = "howardchingchung@gmail.com";
-    isNormalUser = true;
-    extraGroups = [ "wheel" "docker" "audio" "jackaudio"]; # Enable ‘sudo’ for the user.
-    openssh.authorizedKeys.keyFiles = [ 
-      "/home/howie/.ssh/id_ed25519.pub"
-		];
-	  packages = with pkgs; [
-       firefox
-       #thunderbird
-	#		 git
-     ];
-   };
+
 
   # List packages installed in system profile. To search, run:
   # $ nix search wget
@@ -103,6 +112,9 @@
     environment.systemPackages = with pkgs; [
      #neovim # Do not forget to add an editor to edit configuration.nix! The Nano editor is also installed by default.
       wget
+      glibcLocales
+      libsForQt5.qt5.qttools
+      lsof
       # libjack2 jack2 qjackctl
       #  pavucontrol libjack2 jack2 qjackctl jack2Full jack_capture 
       #   wine-staging winetricks
