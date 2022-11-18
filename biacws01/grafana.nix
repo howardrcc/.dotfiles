@@ -11,21 +11,27 @@
         passwordFile="/grafana/wpw.txt";
         host="smtp.t-mobilethuis.nl:587";
         enable=true;
-        fromAddress="howard@t-mobilethuis.nl";
+        fromAddress="howardchingchung@gmail.com";
     };
 };
+ 
+ # nginx reverse prox
+services.nginx = {
+	  enable = true;
+    recommendedProxySettings = true;
+    recommendedTlsSettings = true;
+};
 
- # nginx reverse proxy
-  services.nginx.virtualHosts.${config.services.grafana.domain} = {
+  services.nginx.virtualHosts."grafana.box" = {
     locations."/" = {
-        proxyPass = "http://127.0.0.1:${toString config.services.grafana.port}";
+        proxyPass = "http://127.0.0.1:3000";
         proxyWebsockets = true;
     };
   };
 
   services.prometheus = {
     enable = true;
-    port = 9001;
+    port = 9009;
   };
 
   services.prometheus = {
@@ -38,9 +44,15 @@
     };
     scrapeConfigs = [
       {
-        job_name = "chrysalis";
+        job_name = "ryzen";
         static_configs = [{
           targets = [ "127.0.0.1:${toString config.services.prometheus.exporters.node.port}" ];
+        }];
+      }
+    {
+        job_name = "htpcnix";
+        static_configs = [{
+          targets = [ "192.168.1.133:9002" ];
         }];
       }
 
@@ -53,6 +65,15 @@
           targets = ["localhost:8008"];
           }];
      }
+         {    
+        job_name= "teku-htpc";
+        scrape_timeout= "10s";
+        metrics_path="/metrics";
+        scheme= "http";
+        static_configs = [{
+          targets = ["192.168.1.133:8008"];
+          }];
+     }
 
      {
         job_name= "besu";
@@ -61,19 +82,28 @@
         metrics_path="metrics";
         scheme= "http";
         static_configs = [{
-          targets = ["192.168.1.53:9545"];
+          targets = ["localhost:9545"];
    #       targets = ["localhost:9091"];
           }];
      }
+		 {
+				 job_name="geth node";
+         scrape_interval="15s";
+         scrape_timeout="10s";
+         metrics_path="/debug/metrics/prometheus";
+         static_configs= [{
+           targets= ["192.168.1.133:6060"];
+         }];
+      }
 
-          {
-        job_name= "besu_old";
+        {
+        job_name= "besu_htpc";
         scrape_interval="15s";
         scrape_timeout="10s";
         metrics_path="metrics";
         scheme= "http";
         static_configs = [{
-          targets = ["0.0.0.0:9545"];
+          targets = ["192.168.1.133:9545"];
    #       targets = ["localhost:9091"];
           }];
      }

@@ -7,23 +7,25 @@
  
     home.packages = [ pkgs.git 
       pkgs.alacritty
+#		pkgs.discord
       pkgs.git
-      pkgs.openconnect
+      pkgs.filezilla
+			pkgs.libreoffice-qt
+#      pkgs.openconnect_unstable
       pkgs.remmina
-      pkgs.vlc
       pkgs.teams
-      pkgs.discord
       pkgs.spotify
       pkgs.p7zip
       pkgs.gparted      
-      #pkgs.spicetify-cli
-     
-#      pkgs.winePackages.stagingFull
-      pkgs.wineWowPackages.stagingFull
-      pkgs.winetricks
+      pkgs.celluloid
+      pkgs.minecraft
+      pkgs.mpv
       pkgs.qbittorrent
-      pkgs.filezilla
-     # pkgs.lxqt.pavucontrol-qt
+      pkgs.vlc
+      pkgs.tmux
+     # pkgs.wineWowPackages.stagingFull
+     # pkgs.winetricks
+
     ];
 
    
@@ -31,9 +33,9 @@
     programs.vscode = {
       enable = true;
       extensions = with pkgs.vscode-extensions; [
-      arcticicestudio.nord-visual-studio-code
-     #vscodevim.vim
-     #yzhang.markdown-all-in-one
+        arcticicestudio.nord-visual-studio-code
+      #vscodevim.vim
+      #yzhang.markdown-all-in-one
       ];
     };
 
@@ -47,8 +49,14 @@
         set tabstop=2
       '';
     };
-  
-  };
 
+      
+    programs.fish.enable = true;
+    programs.fish.shellInit = "set -U fish_prompt_pwd_dir_length 0";
+  
+		
+  }; #end home-manager
+
+  users.users.howie.shell = pkgs.fish;
 
 }

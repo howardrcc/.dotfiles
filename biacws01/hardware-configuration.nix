@@ -39,9 +39,22 @@
 
   fileSystems."/boot" =
     { device = "/dev/disk/by-uuid/38DD-2D6B";
+#     { device = "/dev/disk/by-id/nvme-Samsung_SSD_970_EVO_Plus_1TB_S4EWNF0MA34459Z-part3";
       fsType = "vfat";
       options = [ "X-mount.mkdir" ];
     };
+
+#  fileSystems."/eth" =
+#    { device = "/dev/disk/by-uuid/182179ea-a124-4c44-a41a-048acb58afdf";
+#      fsType = "ext4";
+#   };
+
+#  fileSystems."/mnt/ssd" =
+#    { device = "/dev/disk/by-id/ata-CT1000MX500SSD1_2211E619D985-part2";
+#      fsType = "ext4";
+#   };
+
+
 
   swapDevices = [
     { device = "/dev/disk/by-id/nvme-eui.0025385a91b2b633-part2";
