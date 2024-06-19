@@ -102,6 +102,6 @@ source $ZSH/oh-my-zsh.sh
 
 [ -f ~/.fzf.zsh ] && source ~/.fzf.zsh
 fpath+=${ZDOTDIR:-~}/.zsh_functions
-path+=('/home/howie/.cargo/bin')
-path+=('/home/howie/.local/share/omakub/bin')
+path+=('$HOME/.cargo/bin')
+path+=('$HOME/.local/share/omakub/bin')
 
