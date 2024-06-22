@@ -15,7 +15,9 @@ unset rc
 
 # merge omakub bash settings with personal.dotfiles
 source ~/.local/share/omakub/defaults/bash/rc
-
+#get fzf keybindings from git and copy
+#
+#
 # User specific environment
 if ! [[ "$PATH" =~ "$HOME/.local/bin:$HOME/bin:" ]]; then
 	PATH="$HOME/.local/bin:$HOME/bin:$PATH"
