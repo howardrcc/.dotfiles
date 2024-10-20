@@ -1,0 +1,3 @@
+[submodule ".config/jakoolit/nvim"]
+	path = .config/jakoolit/nvim
+	url = https://github.com/LazyVim/LazyVim

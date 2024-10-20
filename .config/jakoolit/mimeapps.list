@@ -1,0 +1,5 @@
+
+[Default Applications]
+x-scheme-handler/msteams=teams.desktop
+inode/directory=thunar.desktop
+application/x-wayland-gnome-saved-search=thunar.desktop
