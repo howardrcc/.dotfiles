@@ -15,6 +15,8 @@ to be added:
 hyprland / wayland (fork from jakoolit)
 lazyvim neovim (fork from omakub)
 omakub elements (fzf, alacritty, zellij)
+- framework pam files
+- framework powersettingfiles hibernate then suspend 
 
 
 - some parts are in ansible, others in shell script
