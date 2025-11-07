@@ -23,4 +23,12 @@ omakub elements (fzf, alacritty, zellij)
 - use stow for symlinking config files in this repo to the user home dir
 
 
+# see archwiki framework; set reg domain
+
+## shell copy paste
+    control-A will take you to the beginning of the line.
+
+    control-K will kill the whole line that you have just entered.
+
+    control-Y will yank the text back.
 
