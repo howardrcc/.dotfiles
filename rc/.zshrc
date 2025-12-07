@@ -7,7 +7,7 @@ ZSH_THEME="xiong-chiamiov-plus"
 SUDO_EDITOR=/usr/bin/nvim
 plugins=(
     git
-    archlinux
+#    archlinux
     zsh-autosuggestions
     zsh-syntax-highlighting
 )
@@ -22,7 +22,7 @@ source $ZSH/oh-my-zsh.sh
 #pokemon-colorscripts --no-title -s -r
 
 # fastfetch. Will be disabled if above colorscript was chosen to install
-fastfetch -c $HOME/.config/fastfetch/config.jsonc
+#fastfetch -c $HOME/.config/fastfetch/config.jsonc
 
 # Set-up icons for files/folders in terminal
 alias ls='eza -a --icons'
@@ -38,11 +38,12 @@ HISTSIZE=10000
 SAVEHIST=10000
 setopt appendhistory
 
-if command -v tmux &> /dev/null && [ -n "$PS1" ] && [[ ! "$TERM" =~ screen ]] && [[ ! "$TERM" =~ tmux ]] && [ -z "$TMUX" ]; then
-  exec tmux
-fi
+#if command -v tmux &> /dev/null && [ -n "$PS1" ] && [[ ! "$TERM" =~ screen ]] && [[ ! "$TERM" =~ tmux ]] && [ -z "$TMUX" ]; then
+#  exec tmux
+#fi
 
 
 export NVM_DIR="$HOME/.config/nvm"
 [ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"  # This loads nvm
 [ -s "$NVM_DIR/bash_completion" ] && \. "$NVM_DIR/bash_completion"  # This loads nvm bash_completion
+source /usr/share/zsh-syntax-highlighting/zsh-syntax-highlighting.zsh

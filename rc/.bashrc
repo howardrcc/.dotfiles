@@ -14,7 +14,7 @@ fi
 unset rc
 
 # merge omakub bash settings with personal.dotfiles
-source ~/.local/share/omakub/defaults/bash/rc
+#source ~/.local/share/omakub/defaults/bash/rc
 #get fzf keybindings from git and copy
 #
 #
@@ -42,4 +42,4 @@ export PATH
 
 [ -f ~/.fzf.bash ] && source ~/.fzf.bash
 
-source /home/howie/Downloads/alacritty/extra/completions/alacritty.bash
+#source /home/howie/Downloads/alacritty/extra/completions/alacritty.bash
