@@ -5,8 +5,11 @@ if [[ ! "$PATH" == *$HOME/.fzf/bin* ]]; then
 fi
 
 export FZF_DEFAULT_OPTS="
---bind 'ctrl-y:execute(readlink -f {} | xclip -selection clipboard)'
---bind 'enter:become(nvim {})'
+--bind 'ctrl-y:execute(readlink -f {} | wl-copy )'
 "
 
+export FZF_CTRL_T_OPTS="--preview 'bat --color=always --style=numbers --line-range :500 {}'"
+
+# Alt-C (cd) with preview
+export FZF_ALT_C_OPTS="--preview 'tree -C {} | head -200'"
 source <(fzf --zsh)

@@ -10,10 +10,11 @@ plugins=(
 #    archlinux
     zsh-autosuggestions
     zsh-syntax-highlighting
+    fzf
 )
 
 source $ZSH/oh-my-zsh.sh
-
+source ~/.fzf.zsh
 # Check archlinux plugin commands here
 # https://github.com/ohmyzsh/ohmyzsh/tree/master/plugins/archlinux
 
@@ -30,6 +31,8 @@ alias ll='eza -al --icons'
 alias lt='eza -a --tree --level=1 --icons'
 alias vi='nvim'
 alias vim='nvim'
+alias fz='fzf --bind "enter:become(nvim {})"'
+
 # Set-up FZF key bindings (CTRL R for fuzzy history finder)
 source <(fzf --zsh)
 

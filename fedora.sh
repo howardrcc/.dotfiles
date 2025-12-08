@@ -16,3 +16,10 @@ echo 'Hi these are my fedora dotfiles!'
 #dnf config-manager addrepo --from-repofile=https://download.opensuse.org/repositories/shells:zsh-users:zsh-autosuggestions/Fedora_Rawhide/shells:zsh-users:zsh-autosuggestions.repo
 ##dnt
 #dnf install zsh-syntax-highlighting
+
+#pop shell for windows tiling
+#get pop launcher as well
+#use gnome extentions
+#key bindings in pop shell cannot be put in config
+
+sudo dnf install remmina
