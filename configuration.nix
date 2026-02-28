@@ -73,8 +73,12 @@
       # Shows battery charge of con
 
   # Enable the KDE Plasma Desktop Environment.
-  services.displayManager.sddm.enable = true;
-  #services.desktopManager.plasma6.enable = true;
+  services.displayManager.sddm = {
+    enable = true;
+    wayland.enable = true; 
+  }; 
+
+  services.desktopManager.plasma6.enable = true;
   services.displayManager.defaultSession = "hyprland";
  #using hyprland 
 
@@ -133,24 +137,23 @@
   };
   
 #    history.size = 9999;
-  
-
 
   # Install firefox.
   programs = {
+    firefox.enable = true;
+    hyprland.enable = true;
     zsh.enable = true;
     ssh.startAgent = true;
+
+    steam = {
+      enable = true;
+      remotePlay.openFirewall = true; # Open ports in the firewall for Steam Remote Play
+      dedicatedServer.openFirewall = true; # Open ports in the firewall for Source Dedicated Server
+      localNetworkGameTransfers.openFirewall = true; # Open ports in the firewall for Steam Local Network Game Transfers
+      gamescopeSession.enable = true;  # optional
+    };
   };
-  programs.firefox.enable = true;
-  
-  programs.hyprland.enable = true;
-  programs.steam = {
-    enable = true;
-    remotePlay.openFirewall = true; # Open ports in the firewall for Steam Remote Play
-    dedicatedServer.openFirewall = true; # Open ports in the firewall for Source Dedicated Server
-    localNetworkGameTransfers.openFirewall = true; # Open ports in the firewall for Steam Local Network Game Transfers
-    gamescopeSession.enable = true;  # optional
-  };
+
 # Example for /etc/nixos/configuration.nix
 
 # Allow unfree packages
@@ -164,8 +167,8 @@
     ripgrep
     fd
     wget
-
     oh-my-zsh #check starship
+    jdk21_headless
     zsh
   # lutris
 #    protonup-qt
