@@ -8,6 +8,7 @@
   imports =
     [ # Include the results of the hardware scan.
       ./hardware-configuration.nix
+      ./nvme.nix
 #      ./games.nix
 #      ./pw.nix
     ];
@@ -51,9 +52,31 @@
   # You can disable this if you're only using the Wayland session.
 #  services.xserver.enable = true;
 
+  hardware.bluetooth = {
+    enable = true;
+    powerOnBoot = true;
+    settings = {
+      General = {
+        FastConnectable = true;
+      };
+      Policy = {
+      # Enable all controllers when they are found. This includes
+      # adapters present on start as well as adapters that are plugged
+      # in later on. Defaults to 'true'.
+        AutoEnable = true;
+      };
+    };
+  };
+  
+  services.blueman.enable = true;
+
+      # Shows battery charge of con
+
   # Enable the KDE Plasma Desktop Environment.
   services.displayManager.sddm.enable = true;
-  services.desktopManager.plasma6.enable = true;
+  #services.desktopManager.plasma6.enable = true;
+  services.displayManager.defaultSession = "hyprland";
+ #using hyprland 
 
 # Configure keymap in X11
   services.xserver.xkb = {
@@ -97,6 +120,10 @@
     isNormalUser = true;
     description = "howie";
     shell = pkgs.zsh;
+    openssh.authorizedKeys.keys = [
+      "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIFmHcW93xY45VuYEPP9QzVt1UxgDx8PkdCW1M8KfJaRX"
+    ];
+  
     extraGroups = [ "docker" "networkmanager" "wheel" ];
     packages = with pkgs; [
       kdePackages.kate
@@ -110,9 +137,12 @@
 
 
   # Install firefox.
-  programs.zsh.enable = true;
+  programs = {
+    zsh.enable = true;
+    ssh.startAgent = true;
+  };
   programs.firefox.enable = true;
-
+  
   programs.hyprland.enable = true;
   programs.steam = {
     enable = true;
@@ -141,7 +171,7 @@
 #    protonup-qt
     spotify
     unzip
-
+    statix #nixos linter
   # installed with flakes
 	#    git
   #  vim/nvim
@@ -158,7 +188,13 @@
   # List services that you want to enable:
 
   # Enable the OpenSSH daemon.
-  services.openssh.enable = true;
+  services.openssh = {
+    enable = true;
+    settings = {
+        PasswordAuthentication = false;
+        PermitRootLogin = "no";
+      };
+  };
 
   # Open ports in the firewall.
   # networking.firewall.allowedTCPPorts = [ ... ];
