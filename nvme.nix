@@ -10,7 +10,7 @@
   };
 
   fileSystems."/mnt/ssd" = {
-    device = "/dev/disk/by-uuid/b558a669-86ea-438f-b568-058f2a3ac45f";
+    device = "/dev/disk/by-uuid/7d6c97f1-91ec-418e-9ac0-afd12754e490";
     fsType = "ext4";
     options = [ "defaults" "nofail" ];
   };

@@ -17,15 +17,20 @@
   boot.loader.systemd-boot.enable = true;
   boot.loader.efi.canTouchEfiVariables = true;
 
-  networking.hostName = "nixos"; # Define your hostname.
+  networking = {
+      hostName = "nixos"; # Define your hostname.
+      enable = true;
+      firewall.enable = false;
+ 
+  # Open ports in the firewall.
+  # networking.firewall.allowedTCPPorts = [ ... ];
+  # networking.firewall.allowedUDPPorts = [ ... ];
+};
   # networking.wireless.enable = true;  # Enables wireless support via wpa_supplicant.
 
   # Configure network proxy if necessary
   # networking.proxy.default = "http://user:password@proxy:port/";
   # networking.proxy.noProxy = "127.0.0.1,localhost,internal.domain";
-
-  # Enable networking
-  networking.networkmanager.enable = true;
 
   # 32-bit support for wine/games
   hardware.graphics.enable32Bit = true;  # was hardware.opengl.enable32Bit before 24.11
@@ -78,7 +83,7 @@
     wayland.enable = true; 
   }; 
 
-  services.desktopManager.plasma6.enable = true;
+  services.desktopManager.plasma6.enable = false;
   services.displayManager.defaultSession = "hyprland";
  #using hyprland 
 
@@ -162,17 +167,19 @@
   # List packages installed in system profile. To search, run:
   # $ nix search wget
   environment.systemPackages = with pkgs; [
-    ghostty
-    fzf
-    ripgrep
     fd
+    fzf
+    ghostty
+    grim
+    ripgrep
     wget
     oh-my-zsh #check starship
-    jdk21_headless
     zsh
+    jdk21_headless
   # lutris
 #    protonup-qt
     spotify
+    tmux
     unzip
     statix #nixos linter
   # installed with flakes
@@ -198,12 +205,6 @@
         PermitRootLogin = "no";
       };
   };
-
-  # Open ports in the firewall.
-  # networking.firewall.allowedTCPPorts = [ ... ];
-  # networking.firewall.allowedUDPPorts = [ ... ];
-  # Or disable the firewall altogether.
-  networking.firewall.enable = false;
 
   # This value determines the NixOS release from which the default
   # settings for stateful data, like file locations and database versions
