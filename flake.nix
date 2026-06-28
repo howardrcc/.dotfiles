@@ -18,6 +18,10 @@
       inputs.nixpkgs.follows = "nixpkgs";
     };
 
+    claude-code.url = "github:sadjow/claude-code-nix";
+  # pin it to your nixpkgs to avoid a second nixpkgs eval (optional but tidy):
+    claude-code.inputs.nixpkgs.follows = "nixpkgs";
+
   };
 
   outputs = inputs@ { self, nixpkgs, home-manager, dms, dgop, ... }: {

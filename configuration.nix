@@ -17,15 +17,38 @@
   boot.loader.systemd-boot.enable = true;
   boot.loader.efi.canTouchEfiVariables = true;
 
+# 1. Lever de EDID-blob aan onder lib/firmware/edid/
+  hardware.firmware = [
+    (pkgs.runCommand "custom-edid" {} ''
+      mkdir -p $out/lib/firmware/edid
+      cp ${./1920x1080.bin} $out/lib/firmware/edid/1920x1080.bin
+    '')
+  ];
+
+# Zet firmware-compressie uit (simpelst, geldt systeembreed)
+hardware.firmwareCompression = "none";
+  boot.kernelParams = [
+    "nvidia_drm.modeset=1"
+    "video=DP-1:e"                         # connector forceren (dit deel werkt wél op NVIDIA)
+    "drm.edid_firmware=DP-1:edid/1920x1080.bin"  # ingebouwde kernel-EDID, geen bestand nodig
+  ];
+
+
+# 2. Zorg dat de firmware ook in de initrd zit (NVIDIA vraagt 'm vroeg op)
+  hardware.enableRedistributableFirmware = true;
+  boot.initrd.prepend = [ ];   # zie noot hieronder
+
+  nix.settings.trusted-users = [ "howie" ];
+  
   networking = {
       hostName = "nixos"; # Define your hostname.
-      enable = true;
+      networkmanager.enable = true;
       firewall.enable = false;
  
   # Open ports in the firewall.
   # networking.firewall.allowedTCPPorts = [ ... ];
   # networking.firewall.allowedUDPPorts = [ ... ];
-};
+  };
   # networking.wireless.enable = true;  # Enables wireless support via wpa_supplicant.
 
   # Configure network proxy if necessary
@@ -75,16 +98,29 @@
   
   services.blueman.enable = true;
 
-      # Shows battery charge of con
 
   # Enable the KDE Plasma Desktop Environment.
-  services.displayManager.sddm = {
-    enable = true;
-    wayland.enable = true; 
+  services = {
+    displayManager = {
+      defaultSession = "hyprland";
+      autoLogin = {
+        enable = true;
+        user = "howie";
+      };
+      sddm = {
+        enable = true;
+        wayland.enable = true;
+        theme= "sddm-astronaut-theme";
+        extraPackages = with pkgs; [
+          qt6.qt5compat
+          qt6.qtsvg
+          qt6.qtmultimedia
+        ];
+      };
+    };
+    desktopManager.plasma6.enable = false;
   }; 
 
-  services.desktopManager.plasma6.enable = false;
-  services.displayManager.defaultSession = "hyprland";
  #using hyprland 
 
 # Configure keymap in X11
@@ -133,7 +169,7 @@
       "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIFmHcW93xY45VuYEPP9QzVt1UxgDx8PkdCW1M8KfJaRX"
     ];
   
-    extraGroups = [ "docker" "networkmanager" "wheel" ];
+    extraGroups = [ "docker" "networkmanager" "wheel" "syncthing" ];
     packages = with pkgs; [
       kdePackages.kate
       proton-pass
@@ -156,13 +192,43 @@
       dedicatedServer.openFirewall = true; # Open ports in the firewall for Source Dedicated Server
       localNetworkGameTransfers.openFirewall = true; # Open ports in the firewall for Steam Local Network Game Transfers
       gamescopeSession.enable = true;  # optional
+      extraPackages = with pkgs; [ pipewire ];
     };
   };
 
-# Example for /etc/nixos/configuration.nix
 
+# Example for /etc/nixos/configuration.nix
+# In configuration.nix
+programs.thunar = {
+  enable = true;
+  plugins = with pkgs.xfce; [
+    thunar-archive-plugin
+    thunar-volman
+  ];
+};
+
+# Also useful for thumbnails and trash support
+services.gvfs.enable = true;
+services.tumbler.enable = true;
+
+  # Game streaming host (use with the Moonlight client).
+  # capSysAdmin is required for KMS/DRM frame capture on Wayland (no portal
+  # picker popup, unlike Steam Remote Play). NVENC is used automatically on NVIDIA.
+  services.sunshine = {
+    enable = true;
+    autoStart = true;
+    capSysAdmin = true;
+    openFirewall = true;
+  };
 # Allow unfree packages
   nixpkgs.config.allowUnfree = true;
+
+  # Tell EGL where to find NVIDIA's external-platform configs (e.g. the GBM
+  # backend, 15_nvidia_gbm.json). Without this, apps that init EGL on the DRM
+  # render node fail with EGL_NOT_INITIALIZED (0x3001) — notably Steam's
+  # Wayland desktop capture, which then misleadingly says "run with -pipewire".
+  environment.sessionVariables.__EGL_EXTERNAL_PLATFORM_CONFIG_DIRS =
+    "/run/opengl-driver/share/egl/egl_external_platform.d:/run/opengl-driver-32/share/egl/egl_external_platform.d";
 
   # List packages installed in system profile. To search, run:
   # $ nix search wget
@@ -171,6 +237,7 @@
     fzf
     ghostty
     grim
+    nodejs
     ripgrep
     wget
     oh-my-zsh #check starship
@@ -182,6 +249,16 @@
     tmux
     unzip
     statix #nixos linter
+    qbittorrent
+    vlc
+    
+  #    libdrm
+  # or sddm-chili-theme, sddm-astronaut-theme, etc.
+    sddm-astronaut
+    qt6.qtsvg # some themes need this for rendering
+    qt6.qt5compat
+    qt6.qtmultimedia
+    where-is-my-sddm-theme
   # installed with flakes
 	#    git
   #  vim/nvim

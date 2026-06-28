@@ -5,13 +5,13 @@
   imports = [
     inputs.dms.homeModules.dank-material-shell
   ];
-  
+
   home.stateVersion = "25.11";
   
   programs.dank-material-shell = {
     enable = true;
       enableSystemMonitoring = true;
-      dgop.package = inputs.dgop.packages.${pkgs.system}.default;
+      dgop.package = inputs.dgop.packages.${pkgs.stdenv.hostPlatform.system}.default;
   };
   
   programs.git = {
@@ -55,9 +55,33 @@
     defaultEditor = true;
     viAlias = true;
     vimAlias = true;
+    extraPackages = with pkgs; [
+      # LSPs
+      lua-language-server
+      nil # nix LSP
+      nodePackages.typescript-language-server
+    
+      # Tools LazyVim expects
+      gcc
+      gnumake
+      nodejs
+      ripgrep
+      fd
+      lazygit
+    
+      # For treesitter compilation
+      tree-sitter
+    ];
+    plugins = [
+      pkgs.vimPlugins.nvim-treesitter.withAllGrammars
+      pkgs.vimPlugins.markdown-preview-nvim
+    ];
+
   };
 
   home.packages = with pkgs; [
+    #claude-code
+    inputs.claude-code.packages.${pkgs.stdenv.hostPlatform.system}.default
     gcc  # treesitter needs a compiler
   #  ffmpegthumbs    # video thumbnails
     kdePackages.kdegraphics-thumbnailers
@@ -75,10 +99,16 @@
     enable = true;
     settings = {
 
-      monitor = ",5120x1440@120,0x0,1";
+      #monitor = ",5120x1440@120,0x0,1";
+      # in je Hyprland-config (Home Manager of hyprland.conf):
+      monitor = [
+       "DP-3, 5120x1440@120, 0x0, 1"   # je echte ultrawide, primair
+        "DP-1, disable"                  # geforceerde virtuele connector: uit voor Hyprland
+      ];
 
       exec-once = [
         "dms run"  # or: systemctl --user start dms
+        "steam -silent -pipewire"  # start Steam minimized to tray for Remote Play host (EGL/GBM fix is in configuration.nix)
       ];
 
 
