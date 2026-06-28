@@ -1,34 +1,34 @@
 # welcome to my dotfiles!
 
-there are roughly 2 setups: 
-- Nixos (homelab/laptop/personal dev machine)
-- Arch
+Personal dotfiles for two setups:
 
-Contents:
-- .config nvim with a simple init vim
-- . nvim for plug transparancey lua
-- rc files zsh bash (omakub)
-- arch setup for framework 16
+- **NixOS** — homelab / laptop / personal dev machine
+- **Arch / Fedora** — Framework 16 laptop
 
+Config files are symlinked into `$HOME` with [GNU stow](https://www.gnu.org/software/stow/) (see `stowrc.sh`). Some setup lives in shell scripts, some in ansible.
 
-to be added:
-hyprland / wayland (fork from jakoolit)
-lazyvim neovim (fork from omakub)
-omakub elements (fzf, alacritty, zellij)
-- framework pam files
-- framework powersettingfiles hibernate then suspend 
+## Layout
 
+| Path | Contents |
+| --- | --- |
+| `.config/` | Hyprland / Wayland config (forked from [JaKooLit](https://github.com/JaKooLit)), and more |
+| `nvim/` | Neovim — transparency lua + LazyVim (forked from omakub) |
+| `rc/` | shell rc files (zsh / bash, omakub) |
+| `nixos_old/` | previous NixOS host configs (biacws01, homelab, hp, system, users) — being migrated to `nixos/` |
+| `arch.sh` | Arch setup for Framework 16 |
+| `fedora.sh` | Fedora setup |
+| `bluetooth-dualboot.py` | pair Bluetooth devices once across Windows + Linux (see `BLUETOOTH.md`) |
 
-- some parts are in ansible, others in shell script
-- use stow for symlinking config files in this repo to the user home dir
+## To do
 
+- finish migrating NixOS configs from `nixos_old/` into `nixos/`
+- Framework PAM files
+- Framework power settings (hibernate-then-suspend)
+- omakub elements (fzf, alacritty, zellij)
+- see ArchWiki Framework notes; set regulatory domain
 
-# see archwiki framework; set reg domain
+## Shell copy/paste
 
-## shell copy paste
-    control-A will take you to the beginning of the line.
-
-    control-K will kill the whole line that you have just entered.
-
-    control-Y will yank the text back.
-
+- `Ctrl-A` — jump to the beginning of the line
+- `Ctrl-K` — kill (cut) the rest of the line
+- `Ctrl-Y` — yank (paste) it back
