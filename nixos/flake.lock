@@ -2,17 +2,17 @@
   "nodes": {
     "claude-code": {
       "inputs": {
-        "flake-utils": "flake-utils",
         "nixpkgs": [
           "nixpkgs"
-        ]
+        ],
+        "systems": "systems"
       },
       "locked": {
-        "lastModified": 1780709764,
-        "narHash": "sha256-TmYUn7Gr92j2qsrBiNdxxyboeUgsbCQ9xEn+aBsOcxQ=",
+        "lastModified": 1787699103,
+        "narHash": "sha256-3ECBnHUvNzS1Kav9H1VFD1bNinvA12Y722xQ4MZreG8=",
         "owner": "sadjow",
         "repo": "claude-code-nix",
-        "rev": "621404fd3264455b1b451e90e90566c4b67c2fb4",
+        "rev": "566ec1c4dd011a7b32ac5aef69568e209402bf2d",
         "type": "github"
       },
       "original": {
@@ -60,24 +60,6 @@
         "owner": "AvengeMedia",
         "ref": "stable",
         "repo": "DankMaterialShell",
-        "type": "github"
-      }
-    },
-    "flake-utils": {
-      "inputs": {
-        "systems": "systems"
-      },
-      "locked": {
-        "lastModified": 1731533236,
-        "narHash": "sha256-l0KFg5HjrsfsO/JpG+r7fRrqm12kzFHyUHqHCVpMMbI=",
-        "owner": "numtide",
-        "repo": "flake-utils",
-        "rev": "11707dc2f618dd54ca8739b309ec4fc024de578b",
-        "type": "github"
-      },
-      "original": {
-        "owner": "numtide",
-        "repo": "flake-utils",
         "type": "github"
       }
     },

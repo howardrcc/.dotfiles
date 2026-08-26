@@ -40,7 +40,7 @@
     };
     shellAliases = {
       ll = "ls -al";
-      update = "sudo nixos-rebuild switch --flake ~/nixos";
+      update = "sudo nixos-rebuild switch --flake ~/.dotfiles/nixos";
     };
   };
 
@@ -82,7 +82,6 @@
   home.packages = with pkgs; [
     #claude-code
     inputs.claude-code.packages.${pkgs.stdenv.hostPlatform.system}.default
-    gcc  # treesitter needs a compiler
   #  ffmpegthumbs    # video thumbnails
     kdePackages.kdegraphics-thumbnailers
     remmina
@@ -136,8 +135,6 @@
     };
     
     extraConfig = ''
-        $mainMod = SUPER
-
       # Switch workspaces with mainMod + [0-9]
         bind = $mainMod, 1, workspace, 1
         bind = $mainMod, 2, workspace, 2

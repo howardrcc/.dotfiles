@@ -24,7 +24,7 @@
 
   };
 
-  outputs = inputs@ { self, nixpkgs, home-manager, dms, dgop, ... }: {
+  outputs = inputs@ { self, nixpkgs, home-manager, ... }: {
     nixosConfigurations.nixos = nixpkgs.lib.nixosSystem {
       system = "x86_64-linux";
       modules = [

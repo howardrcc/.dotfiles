@@ -36,8 +36,6 @@ hardware.firmwareCompression = "none";
 
 # 2. Zorg dat de firmware ook in de initrd zit (NVIDIA vraagt 'm vroeg op)
   hardware.enableRedistributableFirmware = true;
-  boot.initrd.prepend = [ ];   # zie noot hieronder
-
   nix.settings.trusted-users = [ "howie" ];
   
   networking = {
@@ -118,8 +116,7 @@ hardware.firmwareCompression = "none";
         ];
       };
     };
-    desktopManager.plasma6.enable = false;
-  }; 
+  };
 
  #using hyprland 
 
