@@ -4,6 +4,33 @@
 
 { config, pkgs, ... }:
 
+let
+  # Focusrite Scarlett interfaces power up with their hardware Monitor/Headphone
+  # outputs muted (and the R channel unrouted) until something unmutes them via
+  # ALSA mixer controls - normally done by Focusrite Control on Windows/Mac. Any
+  # physical unplug/replug (or reboot) resets these registers to that default,
+  # so this reapplies our desired state every time the card is (re)detected.
+  # Using numid (not control names) throughout: the simple-mixer names for the
+  # boolean switches don't actually resolve via `amixer sset` on this device
+  # ('Master 1 (Monitor) Playback Switch' -> "Unable to find simple control"),
+  # only `cset numid=N` reliably works. Numids are stable for this exact
+  # card/driver/kernel combo (verified via `amixer -c 2 contents`).
+  #
+  # Desired routing: Monitor out (1/2, the big front-panel knob) carries
+  # PCM 1/2 (i.e. whatever the default PipeWire sink plays); Headphone/Line
+  # 3-4 output is intentionally left muted (it's the same DAC pair either way).
+  scarlettUnmuteScript = pkgs.writeShellScript "scarlett-unmute" ''
+    card=$(echo "$1" | sed 's/^controlC//')
+    usbid=$(cat /proc/asound/card$card/usbid 2>/dev/null)
+    if [ "$usbid" = "1235:8012" ]; then
+      amixer="${pkgs.alsa-utils}/bin/amixer -c $card"
+      $amixer cset numid=10 on,on  >/dev/null 2>&1  # Master 1 (Monitor) Playback Switch: on
+      $amixer cset numid=12 1      >/dev/null 2>&1  # Master 1L (Monitor) Source: PCM 1
+      $amixer cset numid=13 2      >/dev/null 2>&1  # Master 1R (Monitor) Source: PCM 2
+      $amixer cset numid=14 off,off >/dev/null 2>&1 # Master 2 (Headphone/Line 3-4): off
+    fi
+  '';
+in
 {
   imports =
     [ # Include the results of the hardware scan.
@@ -147,6 +174,12 @@ hardware.firmwareCompression = "none";
     #media-session.enable = true;
   };
 
+  # Auto-unmute the Focusrite Scarlett's hardware outputs on every plug-in/boot.
+  # See scarlettUnmuteScript above for why this is needed.
+  services.udev.extraRules = ''
+    ACTION=="add", SUBSYSTEM=="sound", KERNEL=="controlC*", RUN+="${scarlettUnmuteScript} %k"
+  '';
+
 # Example for /etc/nixos/configuration.nix
   services.syncthing = {
     enable = true;
@@ -230,11 +263,13 @@ services.tumbler.enable = true;
   # List packages installed in system profile. To search, run:
   # $ nix search wget
   environment.systemPackages = with pkgs; [
+    alsa-utils
     fd
     fzf
     ghostty
     grim
     nodejs
+    python3
     ripgrep
     wget
     oh-my-zsh #check starship

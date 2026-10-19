@@ -7,7 +7,23 @@
   ];
 
   home.stateVersion = "25.11";
-  
+
+  # Cursor theme. Was previously stuck on a leftover KDE/Plasma "breeze_cursors"
+  # gsetting from before Plasma got disabled, with nothing actually installed
+  # for it - this installs Bibata and wires it into X11/GTK/Hyprcursor
+  # consistently (Hyprland already has enable_hyprcursor = true).
+  home.pointerCursor = {
+    package = pkgs.bibata-cursors;
+    name = "Bibata-Modern-Ice";
+    size = 24;
+    gtk.enable = true;
+    x11.enable = true;
+    hyprcursor.enable = true;
+  };
+  gtk.enable = true;
+  gtk.gtk3.extraConfig.gtk-decoration-layout = "icon:minimize,maximize,close";
+  gtk.gtk4.extraConfig.gtk-decoration-layout = "icon:minimize,maximize,close";
+
   programs.dank-material-shell = {
     enable = true;
       enableSystemMonitoring = true;
