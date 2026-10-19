@@ -1,5 +1,8 @@
 { pkgs, inputs, ... }:
 
+let
+  t3code = pkgs.callPackage ./pkgs/t3code.nix { };
+in
 {
 
   imports = [
@@ -23,6 +26,22 @@
   gtk.enable = true;
   gtk.gtk3.extraConfig.gtk-decoration-layout = "icon:minimize,maximize,close";
   gtk.gtk4.extraConfig.gtk-decoration-layout = "icon:minimize,maximize,close";
+
+  # Start the T3 Code desktop app with the graphical session.
+  systemd.user.services.t3code = {
+    Unit = {
+      Description = "T3 Code desktop app";
+      PartOf = [ "graphical-session.target" ];
+      After = [ "graphical-session.target" ];
+    };
+    Service = {
+      ExecStart = "${t3code}/bin/t3code";
+      # agents (codex, claude, git) must be on PATH for the app
+      Environment = "PATH=/etc/profiles/per-user/%u/bin:/run/current-system/sw/bin";
+      Restart = "on-failure";
+    };
+    Install.WantedBy = [ "graphical-session.target" ];
+  };
 
   programs.dank-material-shell = {
     enable = true;
@@ -99,7 +118,8 @@
   home.packages = with pkgs; [
     #claude-code
     inputs.claude-code.packages.${pkgs.stdenv.hostPlatform.system}.default
-    (pkgs.callPackage ./pkgs/t3code.nix { })
+    inputs.codex-cli.packages.${pkgs.stdenv.hostPlatform.system}.default
+    t3code
   #  ffmpegthumbs    # video thumbnails
     kdePackages.kdegraphics-thumbnailers
     remmina

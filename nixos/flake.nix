@@ -22,6 +22,9 @@
   # pin it to your nixpkgs to avoid a second nixpkgs eval (optional but tidy):
     claude-code.inputs.nixpkgs.follows = "nixpkgs";
 
+    codex-cli.url = "github:sadjow/codex-cli-nix";
+    codex-cli.inputs.nixpkgs.follows = "nixpkgs";
+
   };
 
   outputs = inputs@ { self, nixpkgs, home-manager, ... }: {
