@@ -244,11 +244,50 @@ services.tumbler.enable = true;
   # Game streaming host (use with the Moonlight client).
   # capSysAdmin is required for KMS/DRM frame capture on Wayland (no portal
   # picker popup, unlike Steam Remote Play). NVENC is used automatically on NVIDIA.
-  services.sunshine = {
+  # Apps are declared here instead of via the web UI (which is then read-only
+  # for apps). sunshine-res.sh switches DP-3 to the client's resolution while
+  # streaming and restores 5120x1440 on quit or when Moonlight disconnects.
+  services.sunshine = let
+    res = pkgs.writeShellScript "sunshine-res" (builtins.readFile ./sunshine/sunshine-res.sh);
+    resPrep = mode: { do = "${res} do ${mode}"; undo = "${res} undo"; };
+  in {
     enable = true;
     autoStart = true;
     capSysAdmin = true;
     openFirewall = true;
+    applications = {
+      env.PATH = "$(PATH):$(HOME)/.local/bin";
+      apps = [
+        {
+          name = "Desktop";
+          image-path = "desktop.png";
+          prep-cmd = [ (resPrep "") ];
+          auto-detach = true;
+          wait-all = true;
+          exit-timeout = 5;
+        }
+        {
+          name = "Low Res Desktop";
+          image-path = "desktop.png";
+          prep-cmd = [ (resPrep "1920x1080@60") ];
+          auto-detach = true;
+          wait-all = true;
+          exit-timeout = 5;
+        }
+        {
+          name = "Steam Big Picture";
+          image-path = "steam.png";
+          detached = [ "setsid steam steam://open/bigpicture" ];
+          prep-cmd = [
+            (resPrep "")
+            { do = ""; undo = "setsid steam steam://close/bigpicture"; }
+          ];
+          auto-detach = true;
+          wait-all = true;
+          exit-timeout = 5;
+        }
+      ];
+    };
   };
 # Allow unfree packages
   nixpkgs.config.allowUnfree = true;
