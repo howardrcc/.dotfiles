@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 # Sunshine monitor-resolution helper for Hyprland.
-# Usage: sunshine-res.sh do [WxH@FPS] -> switch DP-3 to the streaming client's
+# Usage: sunshine-res.sh do [WxH@FPS] -> switch the ultrawide to the streaming client's
 #                                       resolution (or the given mode)
 #        sunshine-res.sh undo           -> restore native config (hyprctl reload)
 # Sunshine sets SUNSHINE_CLIENT_WIDTH/HEIGHT/FPS in the environment for prep cmds.
@@ -13,7 +13,7 @@
 set -u
 
 UID_NUM=1000
-MON=DP-3
+MON="desc:Samsung Electric Company C49RG9x H1AK500000"
 HYPRCTL=/etc/profiles/per-user/howie/bin/hyprctl
 LOG=/tmp/sunshine-hypr.log
 SUNSHINE_LOG="$HOME/.config/sunshine/sunshine.log"

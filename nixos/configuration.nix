@@ -245,7 +245,7 @@ services.tumbler.enable = true;
   # capSysAdmin is required for KMS/DRM frame capture on Wayland (no portal
   # picker popup, unlike Steam Remote Play). NVENC is used automatically on NVIDIA.
   # Apps are declared here instead of via the web UI (which is then read-only
-  # for apps). sunshine-res.sh switches DP-3 to the client's resolution while
+  # for apps). sunshine-res.sh switches the ultrawide to the client's resolution while
   # streaming and restores 5120x1440 on quit or when Moonlight disconnects.
   services.sunshine = let
     res = pkgs.writeShellScript "sunshine-res" (builtins.readFile ./sunshine/sunshine-res.sh);
