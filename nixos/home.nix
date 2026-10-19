@@ -56,7 +56,8 @@
     };
     shellAliases = {
       ll = "ls -al";
-      update = "sudo nixos-rebuild switch --flake ~/.dotfiles/nixos";
+      update = "nix flake update --flake ~/.dotfiles/nixos && sudo nixos-rebuild switch --flake ~/.dotfiles/nixos";
+      rebuild = "sudo nixos-rebuild switch --flake ~/.dotfiles/nixos";
     };
   };
 
@@ -98,6 +99,7 @@
   home.packages = with pkgs; [
     #claude-code
     inputs.claude-code.packages.${pkgs.stdenv.hostPlatform.system}.default
+    (pkgs.callPackage ./pkgs/t3code.nix { })
   #  ffmpegthumbs    # video thumbnails
     kdePackages.kdegraphics-thumbnailers
     remmina
