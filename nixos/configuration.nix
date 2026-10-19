@@ -2,7 +2,7 @@
 # your system.  Help is available in the configuration.nix(5) man page
 # and in the NixOS manual (accessible by running ‘nixos-help’).
 
-{ config, pkgs, ... }:
+{ config, pkgs, pkgs-unstable, ... }:
 
 let
   # Focusrite Scarlett interfaces power up with their hardware Monitor/Headphone
@@ -252,6 +252,7 @@ services.tumbler.enable = true;
     resPrep = mode: { do = "${res} do ${mode}"; undo = "${res} undo"; };
   in {
     enable = true;
+    package = pkgs-unstable.sunshine; # stable lags far behind upstream releases
     autoStart = true;
     capSysAdmin = true;
     openFirewall = true;
