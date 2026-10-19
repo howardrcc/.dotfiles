@@ -12,12 +12,8 @@
 
     dms = {
       url = "github:AvengeMedia/DankMaterialShell/stable";
-      inputs.nixpkgs.follows = "nixpkgs";
-    };
-
-    dgop = {
-      url = "github:AvengeMedia/dgop";
-      inputs.nixpkgs.follows = "nixpkgs";
+      # DMS tracks unstable (needs newer Go than the stable channel ships).
+      inputs.nixpkgs.follows = "nixpkgs-unstable";
     };
 
     claude-code.url = "github:sadjow/claude-code-nix";
@@ -26,6 +22,10 @@
 
     codex-cli.url = "github:sadjow/codex-cli-nix";
     codex-cli.inputs.nixpkgs.follows = "nixpkgs";
+
+    # Agent skills, linked into ~/.claude/skills and ~/.codex/skills (see home.nix).
+    poteto-plugins = { url = "github:poteto/plugins"; flake = false; };
+    mattpocock-skills = { url = "github:mattpocock/skills"; flake = false; };
 
   };
 

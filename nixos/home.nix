@@ -1,7 +1,19 @@
-{ pkgs, inputs, ... }:
+{ pkgs, lib, inputs, ... }:
 
 let
   t3code = pkgs.callPackage ./pkgs/t3code.nix { };
+
+  # Every subdirectory of `dir` is a skill: name -> store path.
+  skillsIn = dir: lib.mapAttrs' (name: _: lib.nameValuePair name "${dir}/${name}")
+    (lib.filterAttrs (_: type: type == "directory") (builtins.readDir dir));
+
+  skills =
+    { unslop = "${inputs.poteto-plugins}/pstack/skills/unslop"; }
+    # Matt's skills are nested per category; agents expect them flat.
+    // lib.foldl' (acc: category: acc // skillsIn "${inputs.mattpocock-skills}/skills/${category}")
+      { } [ "engineering" "productivity" "misc" ];
+
+  linkSkills = base: lib.mapAttrs' (name: src: lib.nameValuePair "${base}/${name}" { source = src; }) skills;
 in
 {
 
@@ -10,6 +22,8 @@ in
   ];
 
   home.stateVersion = "25.11";
+
+  home.file = linkSkills ".claude/skills" // linkSkills ".codex/skills";
 
   # Cursor theme. Was previously stuck on a leftover KDE/Plasma "breeze_cursors"
   # gsetting from before Plasma got disabled, with nothing actually installed
@@ -46,7 +60,9 @@ in
   programs.dank-material-shell = {
     enable = true;
       enableSystemMonitoring = true;
-      dgop.package = inputs.dgop.packages.${pkgs.stdenv.hostPlatform.system}.default;
+      # The module builds DMS with our (stable) pkgs by default, whose Go is too
+      # old; use the flake's own build, which follows nixpkgs-unstable.
+      package = inputs.dms.packages.${pkgs.stdenv.hostPlatform.system}.dms-shell;
   };
   
   programs.git = {
@@ -57,6 +73,11 @@ in
       init.defaultBranch = "main";
       pull.rebase = true;
     };
+  };
+
+  programs.gh = {
+    enable = true;
+    settings.git_protocol = "ssh";
   };
 
   programs.zsh = {
