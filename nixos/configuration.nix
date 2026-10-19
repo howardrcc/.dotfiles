@@ -74,6 +74,24 @@ hardware.firmwareCompression = "none";
   # networking.firewall.allowedTCPPorts = [ ... ];
   # networking.firewall.allowedUDPPorts = [ ... ];
   };
+
+  # De Intel igb-NIC (enp5s0) komt na suspend/resume niet meer omhoog: geen
+  # "Link is Up", geen IP, en Tailscale's MagicDNS valt terug op SERVFAIL.
+  # Na elke resume de link down/up zetten en NM de verbinding laten heractiveren
+  # (zelfde als ~/network.sh handmatig).
+  systemd.services.lan-reset-after-resume = {
+    description = "Reset enp5s0 after resume";
+    after = [ "suspend.target" "hibernate.target" "hybrid-sleep.target" "suspend-then-hibernate.target" ];
+    wantedBy = [ "suspend.target" "hibernate.target" "hybrid-sleep.target" "suspend-then-hibernate.target" ];
+    path = [ pkgs.iproute2 pkgs.networkmanager ];
+    serviceConfig.Type = "oneshot";
+    script = ''
+      ip link set enp5s0 down
+      sleep 1
+      ip link set enp5s0 up
+      nmcli device connect enp5s0 || true
+    '';
+  };
   # networking.wireless.enable = true;  # Enables wireless support via wpa_supplicant.
 
   # Configure network proxy if necessary
