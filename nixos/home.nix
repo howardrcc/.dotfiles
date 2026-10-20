@@ -160,10 +160,8 @@ in
       #monitor = ",5120x1440@120,0x0,1";
       # in je Hyprland-config (Home Manager of hyprland.conf):
       monitor = [
-        # Match de ultrawide op beschrijving, niet op poort: de connectornaam
-        # wisselt (DP-3 <-> DP-1) en "DP-1, disable" zette dan het echte scherm uit.
-        "desc:Samsung Electric Company C49RG9x H1AK500000, 5120x1440@120, 0x0, 1"
-        ", disable"                      # al het andere (o.a. de geforceerde virtuele connector) uit
+       "DP-3, 5120x1440@120, 0x0, 1"   # je echte ultrawide, primair
+        "DP-1, disable"                  # geforceerde virtuele connector: uit voor Hyprland
       ];
 
       exec-once = [
