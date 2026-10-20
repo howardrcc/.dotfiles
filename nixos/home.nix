@@ -63,6 +63,9 @@ in
       # The module builds DMS with our (stable) pkgs by default, whose Go is too
       # old; use the flake's own build, which follows nixpkgs-unstable.
       package = inputs.dms.packages.${pkgs.stdenv.hostPlatform.system}.dms-shell;
+      # The DMS flake no longer ships Quickshell; stable's 0.2.x is too old
+      # for DMS 1.6 ("Unrecognized pragma AppId"), so take it from unstable.
+      quickshell.package = inputs.nixpkgs-unstable.legacyPackages.${pkgs.stdenv.hostPlatform.system}.quickshell;
   };
   
   programs.git = {
