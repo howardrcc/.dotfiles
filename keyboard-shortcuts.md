@@ -15,3 +15,9 @@ o - insertline on next line
 # fzf
 
 # tmux
+
+# shell (zsh / bash)
+
+Ctrl-A - jump to the beginning of the line
+Ctrl-K - kill (cut) the rest of the line
+Ctrl-Y - yank (paste) it back
