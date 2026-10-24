@@ -21,25 +21,47 @@ in
     inputs.dms.homeModules.dank-material-shell
   ];
 
-  home.stateVersion = "25.11";
+  home = {
+    stateVersion = "25.11";
 
-  home.file = linkSkills ".claude/skills" // linkSkills ".codex/skills";
+    file = linkSkills ".claude/skills" // linkSkills ".codex/skills";
 
-  # Cursor theme. Was previously stuck on a leftover KDE/Plasma "breeze_cursors"
-  # gsetting from before Plasma got disabled, with nothing actually installed
-  # for it - this installs Bibata and wires it into X11/GTK/Hyprcursor
-  # consistently (Hyprland already has enable_hyprcursor = true).
-  home.pointerCursor = {
-    package = pkgs.bibata-cursors;
-    name = "Bibata-Modern-Ice";
-    size = 24;
-    gtk.enable = true;
-    x11.enable = true;
-    hyprcursor.enable = true;
+    # Cursor theme. Was previously stuck on a leftover KDE/Plasma "breeze_cursors"
+    # gsetting from before Plasma got disabled, with nothing actually installed
+    # for it - this installs Bibata and wires it into X11/GTK/Hyprcursor
+    # consistently (Hyprland already has enable_hyprcursor = true).
+    pointerCursor = {
+      package = pkgs.bibata-cursors;
+      name = "Bibata-Modern-Ice";
+      size = 24;
+      gtk.enable = true;
+      x11.enable = true;
+      hyprcursor.enable = true;
+    };
+
+    packages = with pkgs; [
+      #claude-code
+      inputs.claude-code.packages.${pkgs.stdenv.hostPlatform.system}.default
+      inputs.codex-cli.packages.${pkgs.stdenv.hostPlatform.system}.default
+      t3code
+    #  ffmpegthumbs    # video thumbnails
+      kdePackages.kdegraphics-thumbnailers
+      remmina
+      lutris
+      protonup-qt
+      wine
+      winetricks
+    #  git
+    #ripgrep
+    #fd
+    ];
   };
-  gtk.enable = true;
-  gtk.gtk3.extraConfig.gtk-decoration-layout = "icon:minimize,maximize,close";
-  gtk.gtk4.extraConfig.gtk-decoration-layout = "icon:minimize,maximize,close";
+
+  gtk = {
+    enable = true;
+    gtk3.extraConfig.gtk-decoration-layout = "icon:minimize,maximize,close";
+    gtk4.extraConfig.gtk-decoration-layout = "icon:minimize,maximize,close";
+  };
 
   # Start the T3 Code desktop app with the graphical session.
   systemd.user.services.t3code = {
@@ -57,8 +79,9 @@ in
     Install.WantedBy = [ "graphical-session.target" ];
   };
 
-  programs.dank-material-shell = {
-    enable = true;
+  programs = {
+    dank-material-shell = {
+      enable = true;
       enableSystemMonitoring = true;
       # The module builds DMS with our (stable) pkgs by default, whose Go is too
       # old; use the flake's own build, which follows nixpkgs-unstable.
@@ -66,95 +89,77 @@ in
       # The DMS flake no longer ships Quickshell; stable's 0.2.x is too old
       # for DMS 1.6 ("Unrecognized pragma AppId"), so take it from unstable.
       quickshell.package = inputs.nixpkgs-unstable.legacyPackages.${pkgs.stdenv.hostPlatform.system}.quickshell;
-  };
-  
-  programs.git = {
-    enable = true;
-    settings = {
-      user.email = "howardchingchung@protonmail.com";
-      user.name = "Howard Ching Chung";
-      init.defaultBranch = "main";
-      pull.rebase = true;
     };
-  };
 
-  programs.gh = {
-    enable = true;
-    settings.git_protocol = "ssh";
-  };
-
-  programs.zsh = {
-    enable = true;
-  
-  # Install plugins via Nix
-    autosuggestion.enable = true;
-    syntaxHighlighting.enable = true;  # if you want this too
-  
-    # oh-my-zsh config
-    oh-my-zsh = {
+    git = {
       enable = true;
-      theme = "robbyrussell"; 
-      plugins = [ "git" "docker" ];  # only built-in plugins here
-    # remove zsh-autosuggestions and zsh-autocomplete from this list
+      settings = {
+        user.email = "howardchingchung@protonmail.com";
+        user.name = "Howard Ching Chung";
+        init.defaultBranch = "main";
+        pull.rebase = true;
+      };
     };
-    shellAliases = {
-      ll = "ls -al";
-      update = "nix flake update --flake ~/.dotfiles/nixos && sudo nixos-rebuild switch --flake ~/.dotfiles/nixos";
-      rebuild = "sudo nixos-rebuild switch --flake ~/.dotfiles/nixos";
+
+    gh = {
+      enable = true;
+      settings.git_protocol = "ssh";
+    };
+
+    zsh = {
+      enable = true;
+
+      # Install plugins via Nix
+      autosuggestion.enable = true;
+      syntaxHighlighting.enable = true;  # if you want this too
+
+      # oh-my-zsh config
+      oh-my-zsh = {
+        enable = true;
+        theme = "robbyrussell";
+        plugins = [ "git" "docker" ];  # only built-in plugins here
+        # remove zsh-autosuggestions and zsh-autocomplete from this list
+      };
+      shellAliases = {
+        ll = "ls -al";
+        update = "nix flake update --flake ~/.dotfiles/nixos && sudo nixos-rebuild switch --flake ~/.dotfiles/nixos";
+        rebuild = "sudo nixos-rebuild switch --flake ~/.dotfiles/nixos";
+      };
+    };
+
+    direnv = {
+      enable = true;
+      nix-direnv.enable = true;  # better nix integration
+    };
+
+    neovim = {
+      enable = true;
+      defaultEditor = true;
+      viAlias = true;
+      vimAlias = true;
+      extraPackages = with pkgs; [
+        # LSPs
+        lua-language-server
+        nil # nix LSP
+        nodePackages.typescript-language-server
+
+        # Tools LazyVim expects
+        gcc
+        gnumake
+        nodejs
+        ripgrep
+        fd
+        lazygit
+
+        # For treesitter compilation
+        tree-sitter
+      ];
+      plugins = [
+        pkgs.vimPlugins.nvim-treesitter.withAllGrammars
+        pkgs.vimPlugins.markdown-preview-nvim
+      ];
     };
   };
-
-# direnv
-  programs.direnv = {
-    enable = true;
-    nix-direnv.enable = true;  # better nix integration
-  };
-
-  programs.neovim = {
-    enable = true;
-    defaultEditor = true;
-    viAlias = true;
-    vimAlias = true;
-    extraPackages = with pkgs; [
-      # LSPs
-      lua-language-server
-      nil # nix LSP
-      nodePackages.typescript-language-server
-    
-      # Tools LazyVim expects
-      gcc
-      gnumake
-      nodejs
-      ripgrep
-      fd
-      lazygit
-    
-      # For treesitter compilation
-      tree-sitter
-    ];
-    plugins = [
-      pkgs.vimPlugins.nvim-treesitter.withAllGrammars
-      pkgs.vimPlugins.markdown-preview-nvim
-    ];
-
-  };
-
-  home.packages = with pkgs; [
-    #claude-code
-    inputs.claude-code.packages.${pkgs.stdenv.hostPlatform.system}.default
-    inputs.codex-cli.packages.${pkgs.stdenv.hostPlatform.system}.default
-    t3code
-  #  ffmpegthumbs    # video thumbnails
-    kdePackages.kdegraphics-thumbnailers
-    remmina
-    lutris
-    protonup-qt
-    wine
-    winetricks
-  #  git
-  #ripgrep
-  #fd
-  ];
 
   wayland.windowManager.hyprland = {
     enable = true;
@@ -190,9 +195,13 @@ in
         rounding = 10;
       };
       
-      #settings in source do not require nixos-rebuild and are applied immediate>
+      # Generated by DMS at runtime (~/.config/hypr/dms/); not managed by Nix.
       source = [
-        "./extra.conf"
+        "./dms/colors.conf"
+        "./dms/outputs.conf"
+        "./dms/layout.conf"
+        "./dms/cursor.conf"
+        "./dms/binds.conf"
       ];
     };
     

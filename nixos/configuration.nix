@@ -266,8 +266,19 @@ services.tumbler.enable = true;
   # for apps). sunshine-res.sh switches DP-3 to the client's resolution while
   # streaming and restores 5120x1440 on quit or when Moonlight disconnects.
   services.sunshine = let
-    res = pkgs.writeShellScript "sunshine-res" (builtins.readFile ./sunshine/sunshine-res.sh);
-    resPrep = mode: { do = "${res} do ${mode}"; undo = "${res} undo"; };
+    # Connector that gets resized to the Moonlight client's resolution.
+    streamMonitor = "DP-3";
+    res = pkgs.writeShellApplication {
+      name = "sunshine-res";
+      # hyprctl must match the running Hyprland (the system one).
+      runtimeInputs = [ pkgs.coreutils config.programs.hyprland.package ];
+      runtimeEnv.MON = streamMonitor;
+      # The script keeps going when kill/ls fail, so no errexit/pipefail.
+      bashOptions = [ "nounset" ];
+      text = builtins.readFile ./sunshine/sunshine-res.sh;
+    };
+    resBin = pkgs.lib.getExe res;
+    resPrep = mode: { do = "${resBin} do ${mode}"; undo = "${resBin} undo"; };
   in {
     enable = true;
     package = pkgs-unstable.sunshine; # stable lags far behind upstream releases

@@ -12,9 +12,10 @@
 
 set -u
 
-UID_NUM=1000
-MON=DP-3
-HYPRCTL=/etc/profiles/per-user/howie/bin/hyprctl
+# MON (monitor connector) is exported by the Nix wrapper, see streamMonitor in
+# configuration.nix. hyprctl comes from the wrapper's PATH.
+MON=${MON:?connector to resize, e.g. DP-3}
+UID_NUM=$(id -u)
 LOG=/tmp/sunshine-hypr.log
 SUNSHINE_LOG="$HOME/.config/sunshine/sunshine.log"
 STATE="/run/user/${UID_NUM}/sunshine-res.mode"
@@ -22,12 +23,14 @@ WATCH_PID="/run/user/${UID_NUM}/sunshine-res.watch.pid"
 
 export XDG_RUNTIME_DIR="/run/user/${UID_NUM}"
 # Newest entry in the hypr runtime dir = the live instance signature.
-export HYPRLAND_INSTANCE_SIGNATURE="$(ls -t "/run/user/${UID_NUM}/hypr" 2>/dev/null | head -1)"
+# shellcheck disable=SC2012
+HYPRLAND_INSTANCE_SIGNATURE=$(ls -t "/run/user/${UID_NUM}/hypr" 2>/dev/null | head -1)
+export HYPRLAND_INSTANCE_SIGNATURE
 
 log() { echo "[$(date '+%F %T')] $*"; }
 
-apply_stream() { "$HYPRCTL" keyword monitor "${MON},$(cat "$STATE"),0x0,1"; }
-restore_native() { "$HYPRCTL" reload; }
+apply_stream() { hyprctl keyword monitor "${MON},$(cat "$STATE"),0x0,1"; }
+restore_native() { hyprctl reload; }
 
 stop_watcher() {
   if [ -f "$WATCH_PID" ]; then
