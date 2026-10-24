@@ -18,7 +18,7 @@ fi
 
 if [ -e ~/.zshrc ]
 then
-    mv ~/.zshrc ~/.zhrc.bak
+    mv ~/.zshrc ~/.zshrc.bak
 fi
 
 
